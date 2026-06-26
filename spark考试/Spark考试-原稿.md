@@ -1,48 +1,30 @@
 # 选择填空
 
-Spark和Hadoop在处理上的区别
+spark和hadoop在处理上的区别
 
-spark在内存中计算，hadoop在磁盘（HDFS）上计算
+spark内存计算，hadoop在磁盘上计算
 
 
 
-spark基本工作原理-p14（待补充）
+spark基本工作原理-p14
 
 
 
 spark rdd 和 spark sql
 
-- shuffle：把数据发送到另一个节点
-
-map，一对一映射，不进行shuffle
-
-flatmap，一对多映射再扁平化，不进行shuffle
-
-reducebykey，聚合——>shuffle——>聚合
-
-groupbykey，shuffle——>分组
-
-> reduce先计算再搬运，group先搬运再计算
+map，flatterMap，reducebykey，groupbykey
 
 处理完出来的结果是啥
 
 和功能，区别
 
-
-
-rdd（弹性分布式数据集）：无Schema，不包含列名和元数据，适用于非结构化数据
-
-dataframe：有Schema（列名+类型），类似关系型数据库的表，带元数据
-
-核心区别，数据表元数据，rdd没有数据表
+俩数据模型，rdd / dataframe，核心区别，数据表元数据，rdd没有数据表
 
 
 
 hbase是什么样的数据库
 
-列式存储，分布式，NoSQL（非关系型数据库）
-
-基于HDFS，按行键排序存储
+列存储，分布式，nosql
 
 
 
@@ -178,7 +160,7 @@ kafka中，生产者，消费者，代理，作用
 
 kmeans无监督，逻辑回归有监督
 
-# 读代码
+# 读代码题
 
 求城市平均气温例子代码
 
