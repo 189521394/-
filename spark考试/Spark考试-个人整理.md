@@ -166,7 +166,7 @@ spark.read.csv()	// 读取csv文件
 
 > hbase是个分布式NoSQL数据库，每一行由行键唯一标识，行键自动排序，同时决定数据存在于哪个机器，所以时序行键会导致热点问题，解决办法就是使用随机行键
 >
-> 列族是物理存储策略的分组，一般分冷数据和热数据，一种数据一个列族，建表时定好，一般不超过三个
+> 列簇是物理存储策略的分组，一般分冷数据和热数据，一种数据一个列族，建表时定好，一般不超过三个
 >
 > 列限定符就是字段，动态自由添加
 
@@ -206,47 +206,119 @@ rdd.toDF()
 
 
 
+### updateStateByKey（sparkStreaming）
 
+> 普通分组函数无法统计历史数据，updateStateByKey可以统计历史的所有数据，同时持久化存储在磁盘上，但是需要设置存储路径（checkPoint）
 
-spark streaming upstatebykey，历史数据统计，检测点目录，保存历史数据
+- 功能：跨批次累计历史状态
+- 必须设置存储路径（checkPoint目录）`ssc.checkpoint("hdfs://path")`
 
-数据恢复容错，checkpoint
-
-
-
-kafka，维护元数据，zookeeper，
-
-
-
-spark streaming，处理数据流，分成离散流dstream
+checkPoint用于**状态持久化**和**故障恢复**
 
 
 
-ssming处理时间，数据进到框架被处理的时间
+### kafka元数据管理
+
+- Zookeeper会自动管理kafka的元数据
+
+> 具体管理内容
+>
+> - broker注册：哪些机器在线/挂了
+> - topic配置：有哪些主题，每个主题有多少分区
+> - 分区leader选举：一个分区有几个副本，谁当leader
+> - consumer group偏移量：消费者读取到哪里了
+
+> 新版kafka把偏移量移动到topic内部管理了，不再依赖zookeeper
 
 
 
-ssming，输出模式，三个，追加append，更新update，accomplate全局
+### spark streaming处理模型
+
+- 数据流被切分为dstream
+- 每个时间窗口的数据为一组rdd
 
 
 
-机器学习，字符串标签转数字索引，转换器，
+### structured streaming时间概念
+
+| 时间类型                    | 含义                 |
+| --------------------------- | -------------------- |
+| 事件事件（event time）      | 数据产生的时间       |
+| 摄入时间（ingestion time）  | 数据到达spark的时间  |
+| 处理事件（processing time） | 数据被处理计算的时间 |
 
 
 
-spark任务提交，submit，spark-submit，99p
+### structured streaming输出模式
+
+| 输出模式         | 行为                           |
+| ---------------- | ------------------------------ |
+| append（追加）   | 只输出新增行（最终结果数据）   |
+| update（更新）   | 输出有变化的行                 |
+| complete（全局） | 每次输出整个结果表（所有内容） |
+
+> append模式说明：要等到数据**最后一次更新**，也就是窗口时间和水位线（延迟时间）之后，数据最终确定下来，才会追加进去
 
 
 
-机器学习，推荐，协同过滤，als矩阵算法
+### 机器学习：特征处理
+
+- stringIndexer：将字符串标签转换为数字索引，是一个转换器（transformer）
+
+> 转换示例：“cat”——0，“dog”——1
+
+
+
+### spark任务提交（p99）
+
+```scala
+spark-submit \
+    --class com.example.WordCount \     # 主类（包名.类名）
+    --master yarn \                     # 用 YARN 集群
+    --deploy-mode cluster \             # Driver 放集群，提交完可关机
+    --driver-memory 2g \                # 指挥官用 2G
+    --executor-memory 4g \              # 每个干活的用 4G
+    --num-executors 3 \                 # 启动 3 个干活的
+    my-app.jar                          # Jar 包
+```
+
+
+
+### 推荐算法
+
+- 协同过滤算法
+
+核心：交替最小二乘法（ALS）
+
+
 
 # 简答题
 
-什么是rdd，ljurdd的属性
+### 什么是 RDD？RDD 的五大属性
+
+rdd（弹性分布式数据集）是spark最核心的数据抽象，把数据切块分布到集群各个机器上，并行计算，出故障自动恢复
+
+1. 分区列表：数据切分，并行计算
+2. 计算函数：对数据的操作，如map
+3. 依赖关系：记录与父rdd的血缘关系
+4. 分区器（可选）：决定数据按照什么规则分到哪个分区
+5. 首选位置（可选）：记录每个分区的数据在哪一台机器上，spark会尽量在分区所在的机器进行计算
 
 
 
-简述hbase工作原理，数据存储，读写
+### hbase工作原理
+
+HBase 是一个运行在 HDFS 上的分布式列式 NoSQL 数据库。
+
+表按行键字典序排序后水平切分为多个 Region，分散在不同RegionServer 上管理。
+
+定位一个单元格需要 (行键 + 列族 + 列限定符 + 时间戳) 四个坐标。
+
+写入时先记 WAL日志防丢，再写内存 MemStore 直接返回，MemStore 满了存入HDFS为Hfile。
+
+读取时合并 MemStore、BlockCache 和 HFile中的数据，取时间戳最新的版本返回。
+
+后台会定期做 Compaction 把零散的小 HFile合并成大文件，顺带清理掉过期的旧版本和删除标记。
 
 
 
