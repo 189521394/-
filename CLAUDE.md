@@ -6,62 +6,41 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 仓库概览
 
-这是一个毕业论文仓库，包含**两个独立的 Maven Java Web 项目**，分别实现不同的数据分析与可视化子系统。两者均基于 Java 8，部署在 Tomcat 9 上。
+这是一个毕业论文仓库，包含**三个独立的 Maven 项目**，分别实现不同的数据分析与可视化子系统。均基于 Java 8。
 
 ```
 毕业论文/
-├── 动态数据分析/          # 子项目1：电商实时数据分析系统 ✅ 论文已完成
-│   ├── Redis/              #   Maven 项目 (artifactId: Redis)
-│   ├── 论文大纲.md          #   论文大纲
-│   └── 系统架构图.png       #   系统架构图
-└── 计算机行业职位分析/      # 子项目2：全国大数据职位分析系统 🔥 论文撰写中
-    ├── jobSSM/             #   Maven 项目 (artifactId: jobSSM)
-    ├── 论文大纲.md          #   论文大纲（已重构，加入数据清洗章节）
-    ├── 新旧项目对比分析.md   #   新旧项目对比分析（老项目 → jobSSM）
-    ├── 大数据技术框架.png    #   大数据技术架构图
-    ├── 职位分析-老框架-老技术.docx  # 老论文（含完整的数据清洗+Hive+Sqoop流程）
-    ├── 职位分析（老）.doc    #   老论文 .doc 格式副本
-    └── 计算机行业职位分析.doc #  老论文另一副本
+├── 动态数据分析/               # 论文1：电商实时数据分析系统 ✅ 已完成
+│   ├── Redis/                  #   Maven 项目 (artifactId: Redis)
+│   ├── 论文大纲.md
+│   └── 系统架构图.png
+├── 计算机行业职位分析/          # 论文2：全国大数据职位分析系统 ✅ 已完成
+│   ├── jobSSM/                 #   Maven 项目 (artifactId: jobSSM)
+│   ├── 论文大纲.md
+│   ├── 新旧项目对比分析.md
+│   ├── 大数据技术框架.png
+│   ├── 职位分析-老框架-老技术.docx
+│   └── 计算机行业职位分析.doc
+└── Amazon电商平台数据分析/      # 论文3：电商平台数据分析系统 🔥 论文撰写中
+    ├── session/                #   Maven 项目 (artifactId: session) — Spark SQL 离线分析
+    ├── sparkView/              #   Maven 项目 (artifactId: sparkView) — Spring MVC Web 可视化
+    ├── 论文大纲.md              #   大纲已定稿，摘要+第一章已写
+    └── 电商平台数据分析.doc     #   论文 .doc 文件
 ```
 
 ---
 
 ## 当前工作重点
 
-**子项目1（动态数据分析）论文已定稿，无需再修改。**
+**论文1（动态数据分析）已完成，无需再修改。**
 
-**子项目2（计算机行业职位分析）论文正在撰写。** 论文结构是对老论文的"技术升级+内容整合"：
+**论文2（计算机行业职位分析）已完成。**
 
-- **保留**老论文中完整的数据清洗流水线（MapReduce → Hive → Sqoop → MySQL）
-- **升级**老论文中落后的 Web 层（原生 Servlet/手动 JDBC/手动拼 JSON）为 jobSSM 中的 SSM 三层架构
-- **去掉**系统分析、系统测试等老论文也没有的填充章节
-
-### 论文大纲（新）
-
-参见 `计算机行业职位分析/论文大纲.md`，结构为：
-
-1. 第一章 绪论
-2. 第二章 相关技术介绍（Hadoop/Hive/Sqoop + SSM + ECharts 双线技术栈）
-3. **第三章 数据采集与预处理**（核心新增章 — 来自老论文 §2+§3 的全部流程）
-4. 第四章 系统设计（简化：架构 + 模块 + 数据库）
-5. 第五章 系统实现（jobSSM 源码：配置 → Mapper → Service → Controller → 前端 8 图表）
-6. 第六章 总结与展望
-
-### 老论文与 jobSSM 的关系
-
-老论文（`职位分析-老框架-老技术.docx`）提供了完整的**数据处理侧**内容：
-- §2 数据预处理：JobClean / WholeFileRecordReader / WholeFileInputFormat / JobMapper / JobDriver 全部源码
-- §3 数据分析：Hive 建库建表去重 / 6 维度 HQL 分析 / 薪资 3 步处理 / Sqoop 导出
-
-jobSSM 提供了**Web 工程化侧**内容（替代老论文 §4 的简陋实现）：
-- Druid 连接池替代手动 JDBC
-- MyBatis 注解式 Mapper 替代手动 DAO + ResultSet
-- Spring MVC @ResponseBody + Jackson 替代手动拼 JSON 字符串
-- 8 维度 ECharts（饼图/柱状图/词云）替代简单展示
+**论文3（Amazon电商平台数据分析）正在撰写 —— 当前唯一在进行的论文。** 大纲已定稿，摘要和第一章已完成，正在进行后续章节。
 
 ---
 
-## 子项目1：动态数据分析（电商实时数据分析）✅
+## 论文1：动态数据分析（电商实时数据分析）✅
 
 **技术栈：** Spark Streaming 3.3.0 + Kafka 3.2.1 + Redis (Jedis 2.9.0) + Spring MVC 5.2.8 + WebSocket + ECharts + jQuery
 
@@ -96,7 +75,7 @@ jobSSM 提供了**Web 工程化侧**内容（替代老论文 §4 的简陋实现
 
 ---
 
-## 子项目2：计算机行业职位分析（全国大数据职位分析系统）🔥
+## 论文2：计算机行业职位分析（全国大数据职位分析系统）✅
 
 **技术栈：** Spring 5.2.8 + Spring MVC 5.2.8 + MyBatis 3.5.2 + Druid 1.1.20 + MySQL 8.0 + Jackson 2.13.4 + ECharts 4.3.0 + jQuery 1.11.3
 
@@ -160,6 +139,85 @@ org.mapper/     — 8 个 MyBatis Mapper 接口（使用 @Select 注解）
 - JS 资源路径用 `${pageContext.request.contextPath}/js/xxx`（绝对路径）
 
 **构建：** 在 `jobSSM/` 目录下执行 `mvn clean package`，部署 WAR 到 Tomcat 9。需要 MySQL `job` 数据库并预置 8 张分析结果表。
+
+---
+
+## 论文3：Amazon电商平台数据分析 🔥
+
+**技术栈：** Spark SQL 3.3.0 + HBase 2.4.9 + Spring MVC 5.2.8 + Jackson 2.13.4 + ECharts 4.3.0 + jQuery 1.11.3
+
+**两个独立子项目，形成"本地分析 → 集群存储 → Web 展示"链路：**
+
+### 子项目 A：session（Spark SQL 离线分析，写入 HBase）
+
+Maven 项目（artifactId: session），Scala 2.12 + Java 8。读取本地 JSON 数据，Spark SQL 分析后写入 Linux 集群 HBase。
+
+```
+本地 JSON 文件 → Spark SQL DataFrame 分析 → 写入 HBase（Linux 集群 hadoop1/2/3）
+```
+
+| 文件 | 作用 |
+|------|------|
+| `session/src/main/scala/example/Amazon.scala` | 按 category_id 统计 view/cart/purchase 三种行为，取 Top10 品类，写入 HBase `categoryCount` 表 |
+| `session/src/main/scala/example/AmazonOrder.scala` | 按 address_name 用窗口函数 row_number() 取每地区 Top3 热品，筛选 3 个特定商品（1005115/1004856/1004767），写入 HBase `top3` 表 |
+| `session/src/main/scala/example/Conversion.scala` | 按 userid 用 lead() 窗口函数计算页面跳转路径及转化率，写入 HBase `conversion` 表 |
+| `session/src/main/scala/example/HBaseUtil.scala` | HBase 工具类：ZooKeeper 连接（hadoop1/2/3:2181）、建表（列族 info）、批量写入、查询。定义 Info / Product / conBean 三个 case class |
+
+依赖：spark-core_2.12 3.3.0、spark-sql_2.12 3.3.0、hbase-client 2.4.9、hbase-common 2.4.9。
+
+### 子项目 B：sparkView（Spring MVC Web 可视化，读取 HBase）
+
+Maven Web 项目（artifactId: sparkView），Java 8，部署于 Tomcat 9。从 HBase 读取分析结果，ECharts 柱状图展示。
+
+```
+Spring MVC Controller → Service → DAO → HBase Scan → JSON → ECharts 柱状图
+```
+
+**两级 Spring 上下文（父子容器）：**
+- **Root WebApplicationContext**（`ac.xml`）：扫描 `org.service`、`org.DAO`、`org.cn`
+- **Servlet WebApplicationContext**（`springMVC.xml`）：扫描 `org.controller`、注解驱动 MVC、静态资源映射 `/js/**`
+
+**3 个数据接口**（@ResponseBody + Jackson 自动序列化）：
+
+| URL | 图表类型 | HBase 表 | 返回数据 |
+|-----|---------|---------|---------|
+| `/top10` | 分组柱状图 | `categoryCount` | `[id[], view[], cart[], purchase[]]` |
+| `/top3` | 分组柱状图 | `top3` | `[name[], pro4767[], pro4856[], pro5115[]]` |
+| `/jump` | 柱状图 | `conversion` | `[jump[], conversion[]]` |
+
+**包结构：**
+```
+org.bean/       — 3 个 POJO（Top10Bean, Top3Bean, conversionBean）
+org.controller/ — myController（单一 Controller，路由 /、/top10、/top3、/jump）
+org.service/    — service（@Service，注入 DAO，数据格式转换为 Object[]）
+org.DAO/        — DAO（@Repository，HBase Scan 全表扫描）
+org.cn/         — Connect（@Component，HBase 连接管理）
+```
+
+**关键配置文件：**
+- `src/main/resources/ac.xml` — Root 上下文：扫描 org.service / org.DAO / org.cn
+- `src/main/resources/springMVC.xml` — Servlet 上下文：扫描 org.controller、`<mvc:annotation-driven>`、静态资源映射
+- `web/WEB-INF/web.xml` — ContextLoaderListener（ac.xml）+ DispatcherServlet（springMVC.xml）
+
+依赖：spring-* 5.2.8、hbase-client 2.4.9、hbase-common 2.4.9、jackson-* 2.13.4。
+
+构建：在 `sparkView/` 目录下执行 `mvn clean package`，部署 WAR 到 Tomcat 9。需要 Linux 集群 HBase 正常运行且已预置三张分析结果表。
+
+### 论文大纲
+
+参见 `Amazon电商平台数据分析/论文大纲.md`，5 章结构：
+
+1. 第一章 绪论
+2. 第二章 相关技术介绍（Scala + Spark SQL + HBase + Spring MVC + ECharts + Maven）
+3. **第三章 数据分析与处理**（session 项目：集群环境 → 数据源 → 3 个分析程序 → HBaseUtil）
+4. **第四章 Web 可视化系统设计与实现**（sparkView 项目：架构 → 配置 → DAO → Service → Controller → 前端 3 图表）
+5. 第五章 结束语
+
+### 与论文1、论文2的关键区别
+
+- **论文1**：实时流处理（Spark Streaming + Kafka + Redis + WebSocket），5 层流水线
+- **论文2**：离线批处理全流程（MapReduce 清洗 → Hive 分析 → Sqoop 导出 → MySQL → SSM + ECharts），数据预处理是核心章节
+- **论文3（本文）**：离线分析 + 直接 HBase 读写（Spark SQL → HBase ← Spring MVC），两个独立项目各占一章，无中间件（无 Kafka/Redis/Sqoop/MyBatis），结构最精简
 
 ---
 
